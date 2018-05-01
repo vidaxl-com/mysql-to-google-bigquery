@@ -168,7 +168,7 @@ class SyncService
         $mysqlPlatform = $mysqlConnection->getDatabasePlatform();
         $mysqlTableColumns = $this->mysql->getTableColumns($databaseName, $tableName);
 
-        $jsonFilePath = ((isset($_ENV['CACHE_DIR'])) ? $_ENV['CACHE_DIR'] : __DIR__ . '/../../cache/') . $tableName;
+        $jsonFilePath = ((isset($_ENV['CACHE_DIR'])) ? $_ENV['CACHE_DIR'] : __DIR__ . '/../../cache/') . $tableName . '.json';
 
         if (file_exists($jsonFilePath)) {
             unlink($jsonFilePath);
@@ -217,6 +217,7 @@ class SyncService
             }
 
             $string = json_encode($row);
+
 
             // Google BigQuery needs JSON new line delimited file
             // Each line of the file will be each MySQL row converted to JSON
