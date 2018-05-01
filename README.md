@@ -89,6 +89,40 @@ If you want to delete (and create) the table on BigQuery for a full dump:
 vendor/bin/console sync table-name --delete-table
 ```
 
+## Dev mode
+
+Prerequisites
+
+```bash
+sudo apt-get install php-7.2 php7.2-mysql
+```
+
+Pull from git
+
+```bash
+git clone https://github.com/zegerk/mysql-to-google-bigquery.git
+```
+
+Install composer
+
+```bash
+curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+```
+
+Install packages
+
+```bash
+composer install
+```
+
+Add the json.key from Google and create and .env file. 
+
+Run in local dir
+
+```bash
+./bin/console sync TABLE --order-column TIMESTAMP
+```
+
 ## Credits
 
 :heart: Memed SA ([memed.com.br](https://memed.com.br))
