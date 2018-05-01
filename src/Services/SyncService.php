@@ -53,6 +53,20 @@ class SyncService
         array $ignoreColumns,
         OutputInterface $output
     ) {
+        /**
+         * Check if the same process is already running
+         */
+        $lockFilePath = ((isset($_ENV['CACHE_DIR'])) ? $_ENV['CACHE_DIR'] : __DIR__ . '/../../cache/') . $tableName . '.lock';
+
+        if (file_exists($lockFilePath)) {
+            $pid = file_get_contents($lockFilePath);
+            if (file_exists( "/proc/$pid")) {
+                throw new \Exception('Duplicate process running ' . $pid);
+            }
+            unlink($lockFilePath);
+        }
+        file_put_contents($lockFilePath, getmypid());
+
         if ($deleteTable) {
             // Delete the BigQuery Table before any operation
             if ($this->bigQuery->tableExists($bigQueryTableName)) {
@@ -143,6 +157,8 @@ class SyncService
 
         $output->writeln('<fg=green>Synced!</>');
         $progress->finish();
+
+        unlink($lockFilePath);
     }
 
     /**
