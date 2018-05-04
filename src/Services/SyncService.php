@@ -51,6 +51,7 @@ class SyncService
         bool $deleteTable,
         $orderColumn,
         array $ignoreColumns,
+        int $maxRowsPerBatch,
         OutputInterface $output
     ) {
         /**
@@ -134,7 +135,6 @@ class SyncService
             $output->writeln('<fg=green>Syncing ' . $rowsDiff . ' rows</>');
         }
 
-        $maxRowsPerBatch = (isset($_ENV['MAX_ROWS_PER_BATCH'])) ? $_ENV['MAX_ROWS_PER_BATCH'] : 20000;
         $batches = ceil($rowsDiff / $maxRowsPerBatch);
 
         $output->writeln('<info>Sending ' . $batches . ' batches of ' . $maxRowsPerBatch . ' rows/batch</info>');

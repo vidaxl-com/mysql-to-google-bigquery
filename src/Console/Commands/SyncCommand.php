@@ -34,6 +34,7 @@ class SyncCommand extends Command
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                 'Ignore a column from syncing. You can use this option multiple times'
             )
+            ->addOption('batch-size', null, InputOption::VALUE_OPTIONAL, 'Batch size')
             ->addOption('database-name', null, InputOption::VALUE_OPTIONAL, 'MySQL database name')
             ->addOption('bigquery-table-name', null, InputOption::VALUE_OPTIONAL, 'BigQuery table name');
     }
@@ -69,6 +70,12 @@ class SyncCommand extends Command
             $bigQueryTableName = $input->getArgument('table-name');
         }
 
+        $maxRowsPerBatch = $input->getOption('batch-size');
+
+        if (empty($maxRowsPerBatch) || !is_numeric($maxRowsPerBatch)) {
+            $maxRowsPerBatch = (isset($_ENV['MAX_ROWS_PER_BATCH'])) ? $_ENV['MAX_ROWS_PER_BATCH'] : 20000;
+        }
+
         $service = $container->get('MysqlToGoogleBigQuery\Services\SyncService');
         $service->execute(
             $databaseName,
@@ -78,6 +85,7 @@ class SyncCommand extends Command
             $input->getOption('delete-table'),
             $orderColumn,
             $ignoreColumns,
+            $maxRowsPerBatch,
             $output
         );
     }
